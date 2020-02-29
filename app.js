@@ -14,25 +14,48 @@ app.post("/", function(req, res) {
   const url = "https://api.openweathermap.org/data/2.5/weather?q="+ city + "&appid=" + apikey + "&units="+ unit;
 
   https.get(url, function(response) {
-    console.log(response.statusCode); //this gives the output into hyper terminal
+    console.log(response.statusCode);
+    
+var server = http.createServer(function (req, res) {
+    if (req.method === 'POST') {
+        var body = '';
 
-    response.on("data", function(data) {
+        response.on("data", function(data) {
 
-      const weatherData = JSON.parse(data);
-      const temp = weatherData.main.temp
-      const temp1= weatherData.weather[0].description
-      const icon = weatherData.weather[0].icon
-      const image_url = "https://openweathermap.org/img/wn/"+ icon +"@2x.png"
+       const weatherData = JSON.parse(data);
+       const temp = weatherData.main.temp
+       const temp1= weatherData.weather[0].description
+       const icon = weatherData.weather[0].icon
+       const image_url = "https://openweathermap.org/img/wn/"+ icon +"@2x.png"
 
-      res.write("<h1>Temprature in " + city +" is " + temp +" celsius</h1>");
-      res.write("<p> weather description : " +temp1 + "</p>");
-      res.write("<img src="+ image_url + ">");
+       res.write("<h1>Temprature in " + city +" is " + temp +" celsius</h1>");
+       res.write("<p> weather description : " +temp1 + "</p>");
+       res.write("<img src="+ image_url + ">");
 
-      res.send();
-    })
-  })
-})
+       res.send();
+     })
+   })
+ })
 
-app.listen(3000, function() {
-  console.log("Server is running on port 3000.");
-})
+        req.on('end', function() {
+            if (req.url === '/') {
+                log('Received message: ' + body);
+            } else if (req.url = '/scheduled') {
+                log('Received task ' + req.headers['x-aws-sqsd-taskname'] + ' scheduled at ' + req.headers['x-aws-sqsd-scheduled-at']);
+            }
+
+            res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
+            res.end();
+        });
+    } else {
+        res.writeHead(200);
+        res.write(html);
+        res.end();
+    }
+});
+
+// Listen on port 3000, IP defaults to 127.0.0.1
+server.listen(port);
+
+// Put a friendly message on the terminal
+console.log('Server running at http://127.0.0.1:' + port + '/');
