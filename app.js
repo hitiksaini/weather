@@ -1,3 +1,16 @@
+var port = process.env.PORT || 3000,
+    http = require('http'),
+    fs = require('fs'),
+    html = fs.readFileSync('index.html');
+
+var log = function(entry) {
+    fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
+};
+
+
+
+
+
 const express = require('express');
 const https = require("https");
 const bodyParser = require("body-parser");
@@ -15,7 +28,12 @@ app.post("/", function(req, res) {
 
   https.get(url, function(response) {
     console.log(response.statusCode);
-    
+
+
+
+
+
+
 var server = http.createServer(function (req, res) {
     if (req.method === 'POST') {
         var body = '';
